@@ -1,14 +1,36 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 export function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/home", { replace: true });
+    setError("");
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/home", { replace: true });
+    } catch (err: unknown) {
+      const code = (err as { code?: string }).code ?? "";
+      if (code === "auth/user-not-found" || code === "auth/wrong-password" || code === "auth/invalid-credential") {
+        setError("Invalid email or password.");
+      } else if (code === "auth/invalid-email") {
+        setError("Please enter a valid email address.");
+      } else if (code === "auth/too-many-requests") {
+        setError("Too many attempts. Try again later.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -23,19 +45,19 @@ export function Login() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-medium text-muted-foreground ml-1" htmlFor="email">Email or Phone</label>
+            <label className="text-xs font-medium text-muted-foreground ml-1" htmlFor="email">Email</label>
             <input
               id="email"
-              type="text"
+              type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email or phone"
+              placeholder="Enter your email"
               className="w-full h-12 px-4 rounded-xl bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               data-testid="input-login-email"
             />
           </div>
-          
+
           <div className="flex flex-col gap-2">
             <label className="text-xs font-medium text-muted-foreground ml-1" htmlFor="password">Password</label>
             <input
@@ -50,12 +72,22 @@ export function Login() {
             />
           </div>
 
+          {error && (
+            <div
+              className="px-4 py-3 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-sm text-center"
+              data-testid="msg-login-error"
+            >
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full h-12 mt-2 rounded-xl bg-primary text-primary-foreground font-bold active:scale-[0.98] transition-transform"
+            disabled={loading}
+            className="w-full h-12 mt-2 rounded-xl bg-primary text-primary-foreground font-bold active:scale-[0.98] transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
             data-testid="btn-login-submit"
           >
-            Login
+            {loading ? "Signing in..." : "Login"}
           </button>
         </form>
 

@@ -4,6 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useCart } from "../context/CartContext";
 import { BottomNav } from "../components/BottomNav";
+import { formatINR } from "../lib/currency";
 import { ChevronLeft, Star, Plus, Minus, ShoppingCart } from "lucide-react";
 import type { Product } from "../types/product";
 
@@ -48,7 +49,7 @@ export function ProductDetail() {
   }
 
   const fullStars = Math.floor(product.rating);
-  const savings = (product.originalPrice - product.price).toFixed(2);
+  const savings = product.originalPrice - product.price;
 
   return (
     <div className="min-h-[100dvh] bg-background pb-36 animate-in fade-in duration-300" data-testid="page-product-detail">
@@ -111,7 +112,7 @@ export function ProductDetail() {
           </div>
           <span className="text-sm font-semibold">{product.rating}</span>
           <span className="text-sm text-muted-foreground">
-            ({product.reviewCount.toLocaleString()} reviews)
+            ({product.reviewCount.toLocaleString("en-IN")} reviews)
           </span>
         </div>
 
@@ -121,15 +122,15 @@ export function ProductDetail() {
             className="text-3xl font-bold text-primary"
             data-testid="text-product-price"
           >
-            ${product.price.toFixed(2)}
+            {formatINR(product.price)}
           </span>
           {product.originalPrice > product.price && (
             <>
               <span className="text-lg text-muted-foreground line-through">
-                ${product.originalPrice.toFixed(2)}
+                {formatINR(product.originalPrice)}
               </span>
               <span className="text-sm font-semibold text-primary/80">
-                Save ${savings}
+                Save {formatINR(savings)}
               </span>
             </>
           )}
@@ -192,8 +193,8 @@ export function ProductDetail() {
             </div>
             <div className="text-right shrink-0">
               <p className="text-xs text-muted-foreground">Total</p>
-              <p className="text-sm font-bold text-primary">
-                ${(product.price * qty).toFixed(2)}
+              <p className="text-sm font-bold text-primary" data-testid="text-cart-total">
+                {formatINR(product.price * qty)}
               </p>
             </div>
           </div>

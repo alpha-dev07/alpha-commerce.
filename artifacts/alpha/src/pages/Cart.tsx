@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { formatINR } from "../lib/currency";
 import { BottomNav } from "../components/BottomNav";
 import {
   ChevronLeft,
@@ -12,8 +13,8 @@ import {
   CloudUpload,
 } from "lucide-react";
 
-const FREE_DELIVERY_THRESHOLD = 30;
-const DELIVERY_FEE = 2.99;
+const FREE_DELIVERY_THRESHOLD = 499;
+const DELIVERY_FEE = 49;
 
 function EmptyCart() {
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ export function Cart() {
                     <span className="text-xs font-medium text-muted-foreground">
                       Add{" "}
                       <span className="font-bold text-foreground">
-                        ${amountToFreeDelivery.toFixed(2)}
+                        {formatINR(amountToFreeDelivery)}
                       </span>{" "}
                       more for free delivery
                     </span>
@@ -158,7 +159,7 @@ export function Cart() {
 
                     <div className="flex items-center justify-between mt-auto">
                       <span className="text-sm font-bold text-primary" data-testid={`cart-price-${product.id}`}>
-                        ${(product.price * quantity).toFixed(2)}
+                        {formatINR(product.price * quantity)}
                       </span>
 
                       {/* Qty controls */}
@@ -210,7 +211,7 @@ export function Cart() {
                     Subtotal ({totalItems} {totalItems === 1 ? "item" : "items"})
                   </span>
                   <span className="text-sm font-semibold" data-testid="text-subtotal">
-                    ${totalPrice.toFixed(2)}
+                    {formatINR(totalPrice)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
@@ -221,14 +222,14 @@ export function Cart() {
                     </span>
                   ) : (
                     <span className="text-sm font-semibold" data-testid="text-delivery-fee">
-                      ${deliveryFee.toFixed(2)}
+                      {formatINR(deliveryFee)}
                     </span>
                   )}
                 </div>
                 <div className="flex items-center justify-between px-4 py-4">
                   <span className="text-base font-bold">Total</span>
                   <span className="text-xl font-bold text-primary" data-testid="text-order-total">
-                    ${orderTotal.toFixed(2)}
+                    {formatINR(orderTotal)}
                   </span>
                 </div>
               </div>

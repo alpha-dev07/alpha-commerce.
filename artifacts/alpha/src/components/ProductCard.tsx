@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Star, Plus, Minus } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { formatINR } from "../lib/currency";
 import type { Product } from "../types/product";
 
 function RatingStars({ rating }: { rating: number }) {
@@ -64,11 +65,11 @@ export function ProductCard({ product }: { product: Product }) {
 
         <div className="flex items-center gap-1.5 mt-0.5">
           <span className="text-sm font-bold text-primary" data-testid={`price-${product.id}`}>
-            ${product.price.toFixed(2)}
+            {formatINR(product.price)}
           </span>
           {product.originalPrice > product.price && (
             <span className="text-[10px] text-muted-foreground line-through">
-              ${product.originalPrice.toFixed(2)}
+              {formatINR(product.originalPrice)}
             </span>
           )}
         </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useOrders } from "../hooks/useOrders";
+import { formatINR } from "../lib/currency";
 import { BottomNav } from "../components/BottomNav";
 import {
   ChevronLeft,
@@ -91,7 +92,7 @@ function OrderCard({ order }: { order: Order }) {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-base font-bold text-primary">
-              ${order.total.toFixed(2)}
+              {formatINR(order.total)}
             </span>
             {expanded ? (
               <ChevronUp className="w-4 h-4 text-muted-foreground" />
@@ -132,12 +133,12 @@ function OrderCard({ order }: { order: Order }) {
                   <div className="flex flex-col min-w-0">
                     <span className="text-sm font-medium truncate">{product.name}</span>
                     <span className="text-xs text-muted-foreground">
-                      {quantity} × ${product.price.toFixed(2)}
+                      {quantity} × {formatINR(product.price)}
                     </span>
                   </div>
                 </div>
                 <span className="text-sm font-semibold shrink-0">
-                  ${(product.price * quantity).toFixed(2)}
+                  {formatINR(product.price * quantity)}
                 </span>
               </div>
             ))}
@@ -147,19 +148,19 @@ function OrderCard({ order }: { order: Order }) {
           <div className="border-t border-border/50">
             <div className="flex justify-between px-4 py-2.5 border-b border-border/40">
               <span className="text-xs text-muted-foreground">Subtotal</span>
-              <span className="text-xs font-medium">${order.subtotal.toFixed(2)}</span>
+              <span className="text-xs font-medium">{formatINR(order.subtotal)}</span>
             </div>
             <div className="flex justify-between px-4 py-2.5 border-b border-border/40">
               <span className="text-xs text-muted-foreground">Delivery</span>
               {order.deliveryFee === 0 ? (
                 <span className="text-xs font-bold text-primary">FREE</span>
               ) : (
-                <span className="text-xs font-medium">${order.deliveryFee.toFixed(2)}</span>
+                <span className="text-xs font-medium">{formatINR(order.deliveryFee)}</span>
               )}
             </div>
             <div className="flex justify-between px-4 py-3">
               <span className="text-sm font-bold">Total</span>
-              <span className="text-sm font-bold text-primary">${order.total.toFixed(2)}</span>
+              <span className="text-sm font-bold text-primary">{formatINR(order.total)}</span>
             </div>
           </div>
         </div>

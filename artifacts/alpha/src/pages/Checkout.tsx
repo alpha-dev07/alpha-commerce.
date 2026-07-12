@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { collection, addDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useCart } from "../context/CartContext";
+import { formatINR } from "../lib/currency";
 import { BottomNav } from "../components/BottomNav";
 import {
   ChevronLeft,
@@ -17,8 +18,8 @@ import {
   Loader2,
 } from "lucide-react";
 
-const FREE_DELIVERY_THRESHOLD = 30;
-const DELIVERY_FEE = 2.99;
+const FREE_DELIVERY_THRESHOLD = 499;
+const DELIVERY_FEE = 49;
 
 interface FormState {
   name: string;
@@ -276,12 +277,12 @@ export function Checkout() {
                   <div className="flex flex-col min-w-0">
                     <span className="text-sm font-medium truncate">{product.name}</span>
                     <span className="text-xs text-muted-foreground">
-                      {quantity} × ${product.price.toFixed(2)}
+                      {quantity} × {formatINR(product.price)}
                     </span>
                   </div>
                 </div>
                 <span className="text-sm font-semibold shrink-0">
-                  ${(product.price * quantity).toFixed(2)}
+                  {formatINR(product.price * quantity)}
                 </span>
               </div>
             ))}
@@ -291,20 +292,20 @@ export function Checkout() {
           <div className="border-t border-border">
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
               <span className="text-sm text-muted-foreground">Subtotal</span>
-              <span className="text-sm font-semibold">${totalPrice.toFixed(2)}</span>
+              <span className="text-sm font-semibold">{formatINR(totalPrice)}</span>
             </div>
             <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
               <span className="text-sm text-muted-foreground">Delivery</span>
               {deliveryFee === 0 ? (
                 <span className="text-sm font-bold text-primary">FREE</span>
               ) : (
-                <span className="text-sm font-semibold">${deliveryFee.toFixed(2)}</span>
+                <span className="text-sm font-semibold">{formatINR(deliveryFee)}</span>
               )}
             </div>
             <div className="flex items-center justify-between px-4 py-4">
               <span className="text-base font-bold">Total</span>
               <span className="text-xl font-bold text-primary" data-testid="text-checkout-total">
-                ${orderTotal.toFixed(2)}
+                {formatINR(orderTotal)}
               </span>
             </div>
           </div>
@@ -333,7 +334,7 @@ export function Checkout() {
             </>
           ) : (
             <>
-              Place Order · ${orderTotal.toFixed(2)}
+              Place Order · {formatINR(orderTotal)}
               <ShieldCheck className="w-5 h-5" />
             </>
           )}

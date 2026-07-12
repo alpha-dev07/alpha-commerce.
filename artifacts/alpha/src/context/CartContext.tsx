@@ -18,7 +18,8 @@ type CartAction =
   | { type: "REMOVE"; productId: string }
   | { type: "INCREMENT"; productId: string }
   | { type: "DECREMENT"; productId: string }
-  | { type: "LOAD"; items: CartItem[] };
+  | { type: "LOAD"; items: CartItem[] }
+  | { type: "CLEAR" };
 
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
@@ -57,6 +58,8 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
     case "LOAD":
       return { items: action.items };
+    case "CLEAR":
+      return { items: [] };
     default:
       return state;
   }
@@ -68,6 +71,7 @@ interface CartContextValue {
   removeFromCart: (productId: string) => void;
   increment: (productId: string) => void;
   decrement: (productId: string) => void;
+  clearCart: () => void;
   getQuantity: (productId: string) => number;
   totalItems: number;
   totalPrice: number;
@@ -131,6 +135,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     removeFromCart: (id) => dispatch({ type: "REMOVE", productId: id }),
     increment: (id) => dispatch({ type: "INCREMENT", productId: id }),
     decrement: (id) => dispatch({ type: "DECREMENT", productId: id }),
+    clearCart: () => dispatch({ type: "CLEAR" }),
     getQuantity: (id) => state.items.find((i) => i.product.id === id)?.quantity ?? 0,
     totalItems: state.items.reduce((sum, i) => sum + i.quantity, 0),
     totalPrice: state.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),

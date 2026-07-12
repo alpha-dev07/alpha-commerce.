@@ -15,6 +15,8 @@ import { Home } from "./pages/Home";
 import { Profile } from "./pages/Profile";
 import { ProductDetail } from "./pages/ProductDetail";
 import { Cart } from "./pages/Cart";
+import { Checkout } from "./pages/Checkout";
+import { Orders } from "./pages/Orders";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +74,22 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Cart />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/checkout"
+                  element={
+                    <ProtectedRoute>
+                      <Checkout />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/orders"
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
                     </ProtectedRoute>
                   }
                 />

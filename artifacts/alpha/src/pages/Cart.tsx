@@ -240,9 +240,7 @@ export function Cart() {
             <button
               data-testid="btn-proceed-checkout"
               className="w-full h-13 rounded-xl bg-primary text-primary-foreground font-bold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-transform py-3"
-              onClick={() => {
-                // Checkout coming in next phase
-              }}
+              onClick={() => navigate("/checkout")}
             >
               Proceed to Checkout
               <ArrowRight className="w-5 h-5" />

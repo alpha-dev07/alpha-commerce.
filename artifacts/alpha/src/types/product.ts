@@ -13,4 +13,6 @@ export interface Product {
   inStock: boolean;
   featured: boolean;
   bestSeller: boolean;
+  stock?: number;
+  imageUrl?: string;
 }

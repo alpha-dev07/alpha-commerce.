@@ -14,6 +14,7 @@ import { Register } from "./pages/Register";
 import { Home } from "./pages/Home";
 import { Profile } from "./pages/Profile";
 import { ProductDetail } from "./pages/ProductDetail";
+import { Cart } from "./pages/Cart";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <ProductDetail />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/cart"
+                  element={
+                    <ProtectedRoute>
+                      <Cart />
                     </ProtectedRoute>
                   }
                 />

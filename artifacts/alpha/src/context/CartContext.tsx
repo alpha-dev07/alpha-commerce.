@@ -1,4 +1,7 @@
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer, useRef, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
 import type { Product } from "../types/product";
 
 export interface CartItem {
@@ -24,7 +27,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       if (exists) {
         return {
           items: state.items.map((i) =>
-            i.product.id === action.product.id ? { ...i, quantity: i.quantity + 1 } : i
+            i.product.id === action.product.id
+              ? { ...i, quantity: i.quantity + 1 }
+              : i
           ),
         };
       }
@@ -66,27 +71,58 @@ interface CartContextValue {
   getQuantity: (productId: string) => number;
   totalItems: number;
   totalPrice: number;
+  syncing: boolean;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
+  const [syncing, setSyncing] = useState(false);
+  const firestoreReady = useRef(false);
 
+  // Load cart from Firestore when auth resolves
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("alpha-cart");
-      if (stored) {
-        const parsed = JSON.parse(stored) as CartItem[];
-        dispatch({ type: "LOAD", items: parsed });
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      firestoreReady.current = false;
+      if (user) {
+        try {
+          const snap = await getDoc(doc(db, "carts", user.uid));
+          if (snap.exists()) {
+            dispatch({ type: "LOAD", items: snap.data().items ?? [] });
+          }
+        } catch {
+          // fall through — cart still works locally
+        } finally {
+          firestoreReady.current = true;
+        }
+      } else {
+        dispatch({ type: "LOAD", items: [] });
       }
-    } catch {
-      // ignore corrupt data
-    }
+    });
+    return unsub;
   }, []);
 
+  // Sync cart to Firestore on every change (debounced 600 ms)
   useEffect(() => {
-    localStorage.setItem("alpha-cart", JSON.stringify(state.items));
+    if (!firestoreReady.current) return;
+    const user = auth.currentUser;
+    if (!user) return;
+
+    setSyncing(true);
+    const timer = setTimeout(async () => {
+      try {
+        await setDoc(doc(db, "carts", user.uid), { items: state.items });
+      } catch {
+        // silent — local state is still correct
+      } finally {
+        setSyncing(false);
+      }
+    }, 600);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [state.items]);
 
   const value: CartContextValue = {
@@ -98,6 +134,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     getQuantity: (id) => state.items.find((i) => i.product.id === id)?.quantity ?? 0,
     totalItems: state.items.reduce((sum, i) => sum + i.quantity, 0),
     totalPrice: state.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
+    syncing,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

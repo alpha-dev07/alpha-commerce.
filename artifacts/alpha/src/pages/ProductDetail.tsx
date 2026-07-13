@@ -7,6 +7,7 @@ import { useWishlist } from "../context/WishlistContext";
 import { BottomNav } from "../components/BottomNav";
 import { formatINR } from "../lib/currency";
 import { ChevronLeft, Star, Plus, Minus, ShoppingCart, Heart } from "lucide-react";
+import { ReviewsSection } from "../components/ReviewsSection";
 import type { Product } from "../types/product";
 
 export function ProductDetail() {
@@ -182,6 +183,12 @@ export function ProductDetail() {
           <h3 className="text-sm font-bold">About this item</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
         </div>
+
+        {/* Divider */}
+        <div className="h-px bg-border" />
+
+        {/* Reviews */}
+        <ReviewsSection productId={product.id} />
 
         {/* Out of stock notice */}
         {!product.inStock && (

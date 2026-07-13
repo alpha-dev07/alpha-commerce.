@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { Star, Plus, Minus } from "lucide-react";
+import { Star, Plus, Minus, Heart } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { formatINR } from "../lib/currency";
 import type { Product } from "../types/product";
 
@@ -24,7 +25,9 @@ function RatingStars({ rating }: { rating: number }) {
 export function ProductCard({ product }: { product: Product }) {
   const navigate = useNavigate();
   const { addToCart, increment, decrement, getQuantity } = useCart();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const qty = getQuantity(product.id);
+  const wishlisted = isWishlisted(product.id);
 
   return (
     <div
@@ -45,11 +48,35 @@ export function ProductCard({ product }: { product: Product }) {
             background: `radial-gradient(circle at 60% 35%, ${product.imageColor}44, transparent 70%)`,
           }}
         />
+        {product.imageUrl && (
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
         {product.discount > 0 && (
           <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-md z-10">
             -{product.discount}%
           </span>
         )}
+
+        {/* Wishlist heart button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWishlist(product.id);
+          }}
+          data-testid={`btn-wishlist-${product.id}`}
+          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 backdrop-blur flex items-center justify-center z-20 active:scale-90 transition-transform"
+        >
+          <Heart
+            className={`w-3.5 h-3.5 transition-colors ${
+              wishlisted ? "fill-rose-500 text-rose-500" : "text-white/80"
+            }`}
+          />
+        </button>
+
         {!product.inStock && (
           <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
             <span className="text-[10px] font-semibold text-muted-foreground">Out of Stock</span>

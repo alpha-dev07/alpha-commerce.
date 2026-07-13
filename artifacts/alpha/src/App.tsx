@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
 import { AdminAuthProvider } from "./context/AdminAuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { PublicRoute } from "./components/PublicRoute";
@@ -18,6 +19,7 @@ import { ProductDetail } from "./pages/ProductDetail";
 import { Cart } from "./pages/Cart";
 import { Checkout } from "./pages/Checkout";
 import { Orders } from "./pages/Orders";
+import { Wishlist } from "./pages/Wishlist";
 import { SavedAddresses } from "./pages/SavedAddresses";
 import { PaymentMethods } from "./pages/PaymentMethods";
 import { Notifications } from "./pages/Notifications";
@@ -41,137 +43,147 @@ function App() {
           <AdminAuthProvider>
             <AuthProvider>
               <CartProvider>
-                <Routes>
-                  {/* ── Customer routes ── */}
-                  <Route path="/" element={<SplashScreen />} />
+                <WishlistProvider>
+                  <Routes>
+                    {/* ── Customer routes ── */}
+                    <Route path="/" element={<SplashScreen />} />
 
-                  <Route
-                    path="/login"
-                    element={
-                      <PublicRoute>
-                        <Login />
-                      </PublicRoute>
-                    }
-                  />
-                  <Route
-                    path="/register"
-                    element={
-                      <PublicRoute>
-                        <Register />
-                      </PublicRoute>
-                    }
-                  />
+                    <Route
+                      path="/login"
+                      element={
+                        <PublicRoute>
+                          <Login />
+                        </PublicRoute>
+                      }
+                    />
+                    <Route
+                      path="/register"
+                      element={
+                        <PublicRoute>
+                          <Register />
+                        </PublicRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/home"
-                    element={
-                      <ProtectedRoute>
-                        <Home />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/product/:id"
-                    element={
-                      <ProtectedRoute>
-                        <ProductDetail />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/cart"
-                    element={
-                      <ProtectedRoute>
-                        <Cart />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/checkout"
-                    element={
-                      <ProtectedRoute>
-                        <Checkout />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/orders"
-                    element={
-                      <ProtectedRoute>
-                        <Orders />
-                      </ProtectedRoute>
-                    }
-                  />
+                    <Route
+                      path="/home"
+                      element={
+                        <ProtectedRoute>
+                          <Home />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/product/:id"
+                      element={
+                        <ProtectedRoute>
+                          <ProductDetail />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/cart"
+                      element={
+                        <ProtectedRoute>
+                          <Cart />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/checkout"
+                      element={
+                        <ProtectedRoute>
+                          <Checkout />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/orders"
+                      element={
+                        <ProtectedRoute>
+                          <Orders />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/wishlist"
+                      element={
+                        <ProtectedRoute>
+                          <Wishlist />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  {/* ── Profile sub-pages ── */}
-                  <Route
-                    path="/addresses"
-                    element={
-                      <ProtectedRoute>
-                        <SavedAddresses />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/payment-methods"
-                    element={
-                      <ProtectedRoute>
-                        <PaymentMethods />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/notifications"
-                    element={
-                      <ProtectedRoute>
-                        <Notifications />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/privacy-security"
-                    element={
-                      <ProtectedRoute>
-                        <PrivacySecurity />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/about"
-                    element={
-                      <ProtectedRoute>
-                        <AboutAlpha />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/help"
-                    element={
-                      <ProtectedRoute>
-                        <HelpSupport />
-                      </ProtectedRoute>
-                    }
-                  />
+                    {/* ── Profile sub-pages ── */}
+                    <Route
+                      path="/addresses"
+                      element={
+                        <ProtectedRoute>
+                          <SavedAddresses />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/payment-methods"
+                      element={
+                        <ProtectedRoute>
+                          <PaymentMethods />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/notifications"
+                      element={
+                        <ProtectedRoute>
+                          <Notifications />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/privacy-security"
+                      element={
+                        <ProtectedRoute>
+                          <PrivacySecurity />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/about"
+                      element={
+                        <ProtectedRoute>
+                          <AboutAlpha />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/help"
+                      element={
+                        <ProtectedRoute>
+                          <HelpSupport />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                  {/* ── Admin routes ── */}
-                  <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<Navigate to="dashboard" replace />} />
-                    <Route path="dashboard" element={<AdminDashboard />} />
-                    <Route path="products" element={<AdminProducts />} />
-                    <Route path="orders" element={<AdminOrders />} />
-                  </Route>
+                    {/* ── Admin routes ── */}
+                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route path="/admin" element={<AdminLayout />}>
+                      <Route index element={<Navigate to="dashboard" replace />} />
+                      <Route path="dashboard" element={<AdminDashboard />} />
+                      <Route path="products" element={<AdminProducts />} />
+                      <Route path="orders" element={<AdminOrders />} />
+                    </Route>
 
-                  <Route path="*" element={<Navigate to="/home" replace />} />
-                </Routes>
+                    <Route path="*" element={<Navigate to="/home" replace />} />
+                  </Routes>
+                </WishlistProvider>
               </CartProvider>
             </AuthProvider>
           </AdminAuthProvider>

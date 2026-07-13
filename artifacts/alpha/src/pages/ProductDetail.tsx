@@ -3,9 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { BottomNav } from "../components/BottomNav";
 import { formatINR } from "../lib/currency";
-import { ChevronLeft, Star, Plus, Minus, ShoppingCart } from "lucide-react";
+import { ChevronLeft, Star, Plus, Minus, ShoppingCart, Heart } from "lucide-react";
 import type { Product } from "../types/product";
 
 export function ProductDetail() {
@@ -14,7 +15,9 @@ export function ProductDetail() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const { addToCart, increment, decrement, getQuantity } = useCart();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const qty = product ? getQuantity(product.id) : 0;
+  const wishlisted = product ? isWishlisted(product.id) : false;
 
   useEffect(() => {
     if (!id) return;
@@ -38,10 +41,7 @@ export function ProductDetail() {
     return (
       <div className="min-h-[100dvh] bg-background flex flex-col items-center justify-center gap-4 p-6">
         <p className="text-muted-foreground text-sm">Product not found.</p>
-        <button
-          onClick={() => navigate(-1)}
-          className="text-primary font-medium text-sm"
-        >
+        <button onClick={() => navigate(-1)} className="text-primary font-medium text-sm">
           Go back
         </button>
       </div>
@@ -52,7 +52,10 @@ export function ProductDetail() {
   const savings = product.originalPrice - product.price;
 
   return (
-    <div className="min-h-[100dvh] bg-background pb-36 animate-in fade-in duration-300" data-testid="page-product-detail">
+    <div
+      className="min-h-[100dvh] bg-background pb-36 animate-in fade-in duration-300"
+      data-testid="page-product-detail"
+    >
       {/* Hero Image */}
       <div
         className="relative w-full h-72"
@@ -67,6 +70,14 @@ export function ProductDetail() {
           }}
         />
 
+        {product.imageUrl && (
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
@@ -76,8 +87,22 @@ export function ProductDetail() {
           <ChevronLeft className="w-5 h-5 text-white" />
         </button>
 
+        {/* Wishlist heart button */}
+        <button
+          onClick={() => toggleWishlist(product.id)}
+          data-testid="btn-wishlist-detail"
+          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 backdrop-blur border border-white/10 flex items-center justify-center active:scale-90 transition-transform z-10"
+        >
+          <Heart
+            className={`w-5 h-5 transition-colors ${
+              wishlisted ? "fill-rose-500 text-rose-500" : "text-white"
+            }`}
+          />
+        </button>
+
+        {/* Discount badge — bottom-left of hero */}
         {product.discount > 0 && (
-          <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-lg z-10">
+          <div className="absolute bottom-4 left-4 bg-primary text-primary-foreground text-xs font-bold px-2.5 py-1 rounded-lg z-10">
             -{product.discount}% OFF
           </div>
         )}
@@ -103,9 +128,7 @@ export function ProductDetail() {
               <Star
                 key={s}
                 className={`w-4 h-4 ${
-                  s <= fullStars
-                    ? "fill-yellow-400 text-yellow-400"
-                    : "fill-muted text-muted"
+                  s <= fullStars ? "fill-yellow-400 text-yellow-400" : "fill-muted text-muted"
                 }`}
               />
             ))}
@@ -118,10 +141,7 @@ export function ProductDetail() {
 
         {/* Price */}
         <div className="flex items-baseline gap-3 flex-wrap">
-          <span
-            className="text-3xl font-bold text-primary"
-            data-testid="text-product-price"
-          >
+          <span className="text-3xl font-bold text-primary" data-testid="text-product-price">
             {formatINR(product.price)}
           </span>
           {product.originalPrice > product.price && (
@@ -136,15 +156,31 @@ export function ProductDetail() {
           )}
         </div>
 
+        {/* Wishlist shortcut row */}
+        <button
+          onClick={() => toggleWishlist(product.id)}
+          className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border transition-colors active:scale-[0.98] ${
+            wishlisted
+              ? "bg-rose-500/10 border-rose-500/30 text-rose-400"
+              : "bg-card border-border text-muted-foreground"
+          }`}
+          data-testid="btn-wishlist-row"
+        >
+          <Heart
+            className={`w-4 h-4 ${wishlisted ? "fill-rose-500 text-rose-500" : ""}`}
+          />
+          <span className="text-sm font-semibold">
+            {wishlisted ? "Saved to Wishlist" : "Add to Wishlist"}
+          </span>
+        </button>
+
         {/* Divider */}
         <div className="h-px bg-border" />
 
         {/* Description */}
         <div className="flex flex-col gap-2">
           <h3 className="text-sm font-bold">About this item</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {product.description}
-          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
         </div>
 
         {/* Out of stock notice */}

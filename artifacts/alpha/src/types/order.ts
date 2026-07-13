@@ -20,5 +20,7 @@ export interface Order {
   deliveryFee: number;
   total: number;
   status: OrderStatus;
+  couponCode: string | null;
+  couponDiscount: number | null;
   createdAt: number;
 }

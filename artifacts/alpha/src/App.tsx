@@ -32,6 +32,7 @@ import { AdminLayout } from "./pages/admin/AdminLayout";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { AdminProducts } from "./pages/admin/AdminProducts";
 import { AdminOrders } from "./pages/admin/AdminOrders";
+import { AdminCoupons } from "./pages/admin/AdminCoupons";
 
 const queryClient = new QueryClient();
 

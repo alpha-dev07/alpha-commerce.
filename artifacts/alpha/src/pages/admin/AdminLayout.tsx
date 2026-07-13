@@ -1,11 +1,12 @@
 import { Outlet, useNavigate, useLocation, Navigate } from "react-router-dom";
-import { LayoutDashboard, Package, ClipboardList, LogOut, Zap } from "lucide-react";
+import { LayoutDashboard, Package, ClipboardList, LogOut, Zap, Tag } from "lucide-react";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 
 const TABS = [
   { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { path: "/admin/products", label: "Products", icon: Package },
   { path: "/admin/orders", label: "Orders", icon: ClipboardList },
+  { path: "/admin/coupons", label: "Coupons", icon: Tag },
 ];
 
 function AdminSkeleton() {
@@ -72,7 +73,7 @@ export function AdminLayout() {
               <button
                 key={path}
                 onClick={() => navigate(path)}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors ${
+                className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors relative ${
                   active ? "text-primary" : "text-muted-foreground"
                 }`}
               >

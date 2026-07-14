@@ -1,5 +1,5 @@
 import { Outlet, useNavigate, useLocation, Navigate } from "react-router-dom";
-import { LayoutDashboard, Package, ClipboardList, LogOut, Zap, Tag } from "lucide-react";
+import { LayoutDashboard, Package, ClipboardList, LogOut, Zap, Tag, Users, Settings } from "lucide-react";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 
 const TABS = [
@@ -7,6 +7,8 @@ const TABS = [
   { path: "/admin/products", label: "Products", icon: Package },
   { path: "/admin/orders", label: "Orders", icon: ClipboardList },
   { path: "/admin/coupons", label: "Coupons", icon: Tag },
+  { path: "/admin/users", label: "Users", icon: Users },
+  { path: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 function AdminSkeleton() {
@@ -65,15 +67,15 @@ export function AdminLayout() {
       </main>
 
       {/* Bottom navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border/50">
-        <div className="flex items-stretch h-16">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border/50 overflow-x-auto">
+        <div className="flex items-stretch h-16 min-w-max">
           {TABS.map(({ path, label, icon: Icon }) => {
             const active = location.pathname === path;
             return (
               <button
                 key={path}
                 onClick={() => navigate(path)}
-                className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors relative ${
+                className={`flex flex-col items-center justify-center gap-0.5 transition-colors relative px-3 min-w-max ${
                   active ? "text-primary" : "text-muted-foreground"
                 }`}
               >

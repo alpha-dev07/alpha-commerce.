@@ -17,6 +17,8 @@ export interface Coupon {
   createdAt: number;
 }
 
+export type CouponInput = Omit<Coupon, "id" | "usedCount" | "createdAt">;
+
 export interface AppliedCoupon {
   coupon: Coupon;
   discountAmount: number;
